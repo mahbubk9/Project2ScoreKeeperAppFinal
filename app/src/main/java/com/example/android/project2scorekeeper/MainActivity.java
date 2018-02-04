@@ -1,10 +1,12 @@
 package com.example.android.project2scorekeeper;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -200,7 +202,7 @@ public class MainActivity extends AppCompatActivity {
 
             batFirstTeam=batFirstEditText.getText().toString();
 
-            batFirstEditText.setBackgroundColor(Color.WHITE);
+            //batFirstEditText.setBackgroundColor(Color.WHITE);
 
             batFirstEditText.setFocusable(false);
             batFirstEditText.setText(batFirstTeam);
@@ -225,7 +227,7 @@ public class MainActivity extends AppCompatActivity {
             ballFirst=true;
             ballFirstTeam = ballFirstEditText.getText().toString();
             ballFirstEditText.setFocusable(false);
-            ballFirstEditText.setBackgroundColor(Color.WHITE);
+            //ballFirstEditText.setBackgroundColor(Color.WHITE);
             ballFirstEditText.setText(ballFirstTeam);
         }
     }
@@ -847,19 +849,32 @@ public class MainActivity extends AppCompatActivity {
         displayResult("");
         displayResultB("");
         displayFinalResult("");
-        EditText ballFirstEditText = (EditText) findViewById(R.id.ballFirstName);
+
+
+
+
+
+
+
+
         EditText batFirstEditText=(EditText)findViewById(R.id.battingFirstName);
-        ballFirstEditText.setText(null);
-        ballFirstEditText.setFocusable(true);
-        ballFirstEditText.setClickable(true);
-        ballFirstEditText.setCursorVisible(true);
-
-
-
-        batFirstEditText.getText().clear();
+        batFirstEditText.setText("");
         batFirstEditText.setFocusable(true);
         batFirstEditText.setClickable(true);
         batFirstEditText.setCursorVisible(true);
+        batFirstEditText.requestFocus();
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.showSoftInput(batFirstEditText, InputMethodManager.SHOW_IMPLICIT);
+
+        EditText ballFirstEditText = (EditText) findViewById(R.id.ballFirstName);
+        ballFirstEditText.setText("");
+        ballFirstEditText.setFocusable(true);
+        ballFirstEditText.setClickable(true);
+        ballFirstEditText.setCursorVisible(true);
+        ballFirstEditText.requestFocus();
+        InputMethodManager imn = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imn.showSoftInput(ballFirstEditText, InputMethodManager.SHOW_IMPLICIT);
+
 
 
 
