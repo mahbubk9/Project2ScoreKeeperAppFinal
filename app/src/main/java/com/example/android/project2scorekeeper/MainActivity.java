@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -24,13 +25,10 @@ public class MainActivity extends AppCompatActivity {
     int overTeamB=0;
     int ballTeamB=0;
     int wktTeamB=0;
-
     int runDiff= runTeamA-runTeamB;
     int wktDiff=10-wktTeamB;
     boolean batFirst=false;
     boolean ballFirst=false;
-    String batFirstTeam="";
-    String ballFirstTeam="";
     static final String Bat_First_Team="hello";
     static final String Ball_First_Team="hi";
     static final String TEAM_A_RUN = "teamARun";
@@ -44,43 +42,25 @@ public class MainActivity extends AppCompatActivity {
     static final String BAT_FIRST="batfirst";
     static final String BALL_FIRST="ballfirst";
     static  final String RESULT_CHOICE="1 for teamA win, 2 for tamB win, 3 for draw";
-
-
+    EditText batFirstEditText;
+    EditText ballFirstEditText;
+    String batFirstTeam="abc";
+    String ballFirstTeam="def";
     int resultChoice=0;
-
-
-
-
-
-
-
-
-
-
-
-
-
+    int myColor;
+   //ON CREATE METHOD
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
-
-
-
-
+        batFirstEditText=(EditText)findViewById(R.id.battingFirstName);
+        ballFirstEditText=(EditText)findViewById(R.id.ballFirstName);
+        myColor = getResources().getColor(R.color.colorAccent);
     }
-
-
-
-
+    //SAVED INSTANCE STATE
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         // Save the user's current game state
-        //EditText batFirstEditText=(EditText)findViewById(R.id.battingFirstName);
-
-        //EditText ballFirstEditText=(EditText)findViewById(R.id.ballFirsttName);
         savedInstanceState.putInt(TEAM_A_RUN, runTeamA);
         savedInstanceState.putInt(TEAM_A_OVER, overTeamA);
         savedInstanceState.putInt(TEAM_A_BALL,ballTeamA);
@@ -92,22 +72,15 @@ public class MainActivity extends AppCompatActivity {
         savedInstanceState.putInt(RESULT_CHOICE,resultChoice);
         savedInstanceState.putBoolean(BAT_FIRST,batFirst);
         savedInstanceState.putBoolean(BALL_FIRST,ballFirst);
-        //EditText batFirstEditText=(EditText)findViewById(R.id.battingFirstName);
-        //String batFirstTeam=batFirstEditText.getText().toString();
+        ballFirstTeam=ballFirstEditText.getText().toString();
+        batFirstTeam=batFirstEditText.getText().toString();
         savedInstanceState.putString(Bat_First_Team,batFirstTeam);
-
-
-
-        //EditText ballFirstEditText=(EditText)findViewById(R.id.ballFirstName);
-        //String ballFirstTeam=ballFirstEditText.getText().toString();
         savedInstanceState.putString(Ball_First_Team,ballFirstTeam);
-
-
         // Always call the superclass so it can save the view hierarchy state
         super.onSaveInstanceState(savedInstanceState);
     }
 
-
+    //RESTORE INSTANCE STATE METHOD
     public void onRestoreInstanceState(Bundle savedInstanceState) {
         // Always call the superclass so it can restore the view hierarchy
         super.onRestoreInstanceState(savedInstanceState);
@@ -123,24 +96,9 @@ public class MainActivity extends AppCompatActivity {
         overTeamB=savedInstanceState.getInt(TEAM_B_OVER);
         wktTeamB=savedInstanceState.getInt(TEAM_B_WKT);
         batFirst=savedInstanceState.getBoolean(BAT_FIRST);
-        if(batFirst=true){
-            EditText batFirstEditText=(EditText)findViewById(R.id.battingFirstName);
-            batFirstEditText.setBackgroundColor(Color.WHITE);
-            batFirstEditText.setFocusable(false);
-
-        }
         ballFirst=savedInstanceState.getBoolean(BALL_FIRST);
-        if(ballFirst=true){
-            EditText ballFirstEditText=(EditText)findViewById(R.id.ballFirstName);
-            ballFirstEditText.setBackgroundColor(Color.WHITE);
-            ballFirstEditText.setFocusable(false);
-
-        }
-        batFirstTeam=savedInstanceState.getString(Bat_First_Team);
-        ballFirstTeam=savedInstanceState.getString(Ball_First_Team);
-
-
-
+        String batFirstTeam=savedInstanceState.getString(Bat_First_Team);
+        String ballFirstTeam=savedInstanceState.getString(Ball_First_Team);
         resultChoice=savedInstanceState.getInt(RESULT_CHOICE);
         displayRunTeamA(runTeamA);
         displayOverTeamA(overTeamA);
@@ -150,8 +108,8 @@ public class MainActivity extends AppCompatActivity {
         displayRunTeamB(runTeamB);
         displayOverTeamB(overTeamB);
         displayWktTeamB(wktTeamB);
-        String commentryA=  batFirstTeam +"Scored "+runTeamA+ " for "+wktTeamA+ " in "+overTeamA+"."+ballTeamA+" Overs.";
-        String commentryB=  ballFirstTeam +"Scored "+runTeamB+ " for "+wktTeamB+ " in "+overTeamB+"."+ballTeamB+" Overs.";
+        String commentryA=  batFirstTeam +" Scored "+runTeamA+ " for "+wktTeamA+ " in "+overTeamA+"."+ballTeamA+" Overs.";
+        String commentryB=  ballFirstTeam +" Scored "+runTeamB+ " for "+wktTeamB+ " in "+overTeamB+"."+ballTeamB+" Overs.";
         runDiff=runTeamA-runTeamB;
         String teamAWin= batFirstTeam +"Won The Game By " +runDiff+ " runs!" ;
         wktDiff=10-wktTeamB;
@@ -179,19 +137,14 @@ public class MainActivity extends AppCompatActivity {
 
 
         }
-
-
-
+        if(batFirst ==true && ballFirst==true){
+            ballFirstEditText.setCursorVisible(false);
+            batFirstEditText.setCursorVisible(false);
+        }
 
     }
-
-
-
-
-
+    //SETTING BATTING FIRST METHOD
     public void setBatFirst(View view){
-        Button battingFirst=(Button)findViewById(R.id.battingFirstButton);
-        EditText batFirstEditText=(EditText)findViewById(R.id.battingFirstName);
         if (TextUtils.isEmpty(batFirstEditText.getText().toString())) {
             Toast toast = Toast.makeText(getApplicationContext(), "Please Enter The Batting Team Name.", Toast.LENGTH_SHORT);
             toast.show(); // display the Toast
@@ -201,22 +154,16 @@ public class MainActivity extends AppCompatActivity {
             batFirst=true;
 
             batFirstTeam=batFirstEditText.getText().toString();
-
-            //batFirstEditText.setBackgroundColor(Color.WHITE);
-
-            batFirstEditText.setFocusable(false);
+            batFirstEditText.setBackgroundColor(myColor);
             batFirstEditText.setText(batFirstTeam);
+            batFirstEditText.setCursorVisible(false);
 
         }
-
-
-
-
-
     }
-    public void setBallFirst(View view) {
-        Button ballFirstButton = (Button) findViewById(R.id.ballFirstButton);
-        EditText ballFirstEditText = (EditText) findViewById(R.id.ballFirstName);
+    //SETTING BAWLING FIRST METHOD
+    public void setBallFirst(View view ) {
+
+
         if (TextUtils.isEmpty(ballFirstEditText.getText().toString())) {
             Toast toast = Toast.makeText(getApplicationContext(), "Please Enter The Balling Team Name.", Toast.LENGTH_SHORT);
             toast.show(); // display the Toast
@@ -226,49 +173,42 @@ public class MainActivity extends AppCompatActivity {
 
             ballFirst=true;
             ballFirstTeam = ballFirstEditText.getText().toString();
-            ballFirstEditText.setFocusable(false);
-            //ballFirstEditText.setBackgroundColor(Color.WHITE);
+            ballFirstEditText.setBackgroundColor(myColor);
             ballFirstEditText.setText(ballFirstTeam);
+            ballFirstEditText.setCursorVisible(false);
         }
     }
-
-
-
-
-
-
+    //DISPLAY BATTING TEAM  RUN METHOD
     public void displayRunTeamA(int run ){
         TextView runView= (TextView) findViewById(R.id.team_a_run);
         runView.setText(String.valueOf(run));
     }
 
-    //method for displaying teamA wicket
-
+    //BATTING TEAM WICKET DISPLAY
     public void displayWktTeamA(int wkt){
         TextView wktView= (TextView) findViewById(R.id.team_a_wkt);
         wktView.setText(String.valueOf(wkt));
     }
 
-    //method for displaying teamA over
-
+    //BATTING TEAM OVER DISPLAY
     public void displayOverTeamA(int over){
         TextView overView= (TextView) findViewById(R.id.team_a_over);
         overView.setText(String.valueOf(over));
     }
-
+     //BATTING TEAM BALL DISPLAY
     public void displayBallTeamA(int ball){
         TextView ballView= (TextView) findViewById(R.id.team_a_ball);
         ballView.setText(String.valueOf(ball));
     }
-
+     //BATTING TEAM 1 RUN ADDING
     public void oneRunTeamA(View view ){
-        EditText batFirstEditText=(EditText)findViewById(R.id.battingFirstName);
-        String batFirstTeam=batFirstEditText.getText().toString();
+
+        batFirstTeam=batFirstEditText.getText().toString();
         if(batFirst==true&& ballFirst==true&& overTeamA<20 && wktTeamA<10){
             runTeamA=runTeamA+1;
             displayRunTeamA(runTeamA);
 
-            String commentryA= batFirstTeam +"Scored "+runTeamA+ " for "+wktTeamA+ " in "+overTeamA+"."+ballTeamA+" Overs.";
+            String commentryA= batFirstTeam +" Scored "+runTeamA+ " for "+wktTeamA+ " in "+overTeamA+"."+ballTeamA+" Overs.";
 
 
             displayResult(commentryA);
@@ -286,10 +226,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-
+     //BATTING TEAM 4 RUN ADDING
     public void bndryTeamA(View view){
-        EditText batFirstEditText=(EditText)findViewById(R.id.battingFirstName);
-        String batFirstTeam=batFirstEditText.getText().toString();
+
+        batFirstTeam=batFirstEditText.getText().toString();
         if(batFirst==true&& ballFirst==true&& overTeamA<20 && wktTeamA<10){
             runTeamA=runTeamA+4;
             displayRunTeamA(runTeamA);
@@ -311,13 +251,14 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+    //BATTING TEAM 6 RUN ADDING
     public void sixTeamA(View view){
-        EditText batFirstEditText=(EditText)findViewById(R.id.battingFirstName);
-        String batFirstTeam=batFirstEditText.getText().toString();
+
+        batFirstTeam=batFirstEditText.getText().toString();
         if(batFirst==true&& ballFirst==true&& overTeamA<20 && wktTeamA<10){
             runTeamA=runTeamA+6;
             displayRunTeamA(runTeamA);
-             String commentryA=batFirstTeam+"Scored "+runTeamA+ " for "+wktTeamA+ " in "+overTeamA+"."+ballTeamA+" Overs.";
+             String commentryA=batFirstTeam+" Scored "+runTeamA+ " for "+wktTeamA+ " in "+overTeamA+"."+ballTeamA+" Overs.";
             displayResult(commentryA);
 
         }
@@ -334,20 +275,16 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
+    //BATTING TEAM 1 BALL ADDING
     public void addBallTeamA(View view){
-        EditText batFirstEditText=(EditText)findViewById(R.id.battingFirstName);
-        String batFirstTeam=batFirstEditText.getText().toString();
+        batFirstTeam=batFirstEditText.getText().toString();
         if(batFirst==true&& ballFirst==true){
 
-
-
-
             if(overTeamA>19){
-                //String finalResult="Team A Batting Finished";
+
                 overTeamA=20;
                 ballTeamA=0;
-                String commentryA=batFirstTeam+"Scored "+runTeamA+ " for "+wktTeamA+ " in "+overTeamA+"."+ballTeamA+" Overs.";
+                String commentryA=batFirstTeam+" Scored "+runTeamA+ " for "+wktTeamA+ " in "+overTeamA+"."+ballTeamA+" Overs.";
 
 
                 displayResult(commentryA);
@@ -365,15 +302,10 @@ public class MainActivity extends AppCompatActivity {
                     ballTeamA=0;
                     overTeamA=overTeamA+1;
                 }
-
-
-
-
             }
-
             displayOverTeamA(overTeamA);
             displayBallTeamA(ballTeamA);
-            String commentryA=batFirstTeam +"Scored "+runTeamA+ " for "+wktTeamA+ " in "+overTeamA+"."+ballTeamA+" Overs.";
+            String commentryA=batFirstTeam +" Scored "+runTeamA+ " for "+wktTeamA+ " in "+overTeamA+"."+ballTeamA+" Overs.";
             displayResult(commentryA);
         }
         if(overTeamA==20 || wktTeamA==10){
@@ -388,19 +320,16 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-
-
-
+    //BATTING TEAM WICKET ADDDING
     public void addWktTeamA(View view) {
-        EditText batFirstEditText=(EditText)findViewById(R.id.battingFirstName);
-        String batFirstTeam=batFirstEditText.getText().toString();
+        batFirstTeam=batFirstEditText.getText().toString();
         if(batFirst==true&& ballFirst==true){
 
             if (wktTeamA < 10) {
 
                 wktTeamA = wktTeamA + 1;
                 displayWktTeamA(wktTeamA);
-                String commentryA=batFirstTeam +"Scored "+runTeamA+ " for "+wktTeamA+ " in "+overTeamA+"."+ballTeamA+" Overs.";
+                String commentryA=batFirstTeam +" Scored "+runTeamA+ " for "+wktTeamA+ " in "+overTeamA+"."+ballTeamA+" Overs.";
                 displayResult(commentryA);
             }
 
@@ -408,7 +337,7 @@ public class MainActivity extends AppCompatActivity {
 
                 wktTeamA = 10;
                 displayWktTeamA(wktTeamA);
-                String commentryA=batFirstTeam +"Scored "+runTeamA+ " for "+wktTeamA+ " in "+overTeamA+"."+ballTeamA+" Overs.";
+                String commentryA=batFirstTeam +" Scored "+runTeamA+ " for "+wktTeamA+ " in "+overTeamA+"."+ballTeamA+" Overs.";
 
 
                 displayResult(commentryA);
@@ -423,54 +352,39 @@ public class MainActivity extends AppCompatActivity {
         if(ballFirst==false || batFirst==false) {
             Toast toast = Toast.makeText(getApplicationContext(), "Please Enter The Team Names and Batting Order.", Toast.LENGTH_SHORT); // initiate the Toast with context, message and duration for the Toast
             toast.show();
-
-
         }
-
-
     }
-
-
-
-    //method for displaying teamB run
-
+    //BALLING TEAM RUN DISPLAY
     public void displayRunTeamB(int run){
         TextView runView= (TextView) findViewById(R.id.team_b_run);
         runView.setText(String.valueOf(run));
     }
 
-
-
-    //method for displaying teamB wicket
-
+    //BALLING TEAM WICKET DISPLAY
     public void displayWktTeamB(int wkt){
         TextView wktView= (TextView) findViewById(R.id.team_b_wkt);
         wktView.setText(String.valueOf(wkt));
     }
-
-    //method for displaying teamB over
-
+    //BALLING TEAM OVER DISPLAY
     public void displayOverTeamB(int over){
         TextView overView= (TextView) findViewById(R.id.team_b_over);
         overView.setText(String.valueOf(over));
     }
-
+    //BALLING TEAM BALL DISPLAY
     public void displayBallTeamB(int ball){
         TextView ballView= (TextView) findViewById(R.id.team_b_ball);
         ballView.setText(String.valueOf(ball));
     }
-
+    //BALLING TEAM 1 RUN ADDING
     public void oneRunTeamB(View view){
-        EditText ballFirstEditText=(EditText)findViewById(R.id.ballFirstName);
-        String ballFirstTeam=ballFirstEditText.getText().toString();
-        EditText batFirstEditText=(EditText)findViewById(R.id.battingFirstName);
-        String batFirstTeam=batFirstEditText.getText().toString();
+        ballFirstTeam=ballFirstEditText.getText().toString();
+        batFirstTeam=batFirstEditText.getText().toString();
 
         if(wktTeamA==10 || overTeamA==20 && overTeamB<20 && wktTeamB<10&& resultChoice==0){
 
 
             runTeamB=runTeamB+1;
-            String commentryB=ballFirstTeam +"Scored "+runTeamB+ " for "+wktTeamB+ " in "+overTeamB+" Overs.";
+            String commentryB=ballFirstTeam +" Scored "+runTeamB+ " for "+wktTeamB+ " in "+overTeamB+" Overs.";
             displayRunTeamB(runTeamB);
             displayResultB(commentryB);
 
@@ -478,7 +392,7 @@ public class MainActivity extends AppCompatActivity {
             if(runTeamB>runTeamA){
                 resultChoice=2;
                 wktDiff=10-wktTeamB;
-                String teamBWin= ballFirstTeam +"Won The Game for "+wktDiff+ " Wickets!";
+                String teamBWin= ballFirstTeam +" Won The Game for "+wktDiff+ " Wickets!";
                 displayFinalResult(teamBWin);
 
 
@@ -506,7 +420,7 @@ public class MainActivity extends AppCompatActivity {
 
         }
         if(overTeamA<20&& wktTeamA<10 ){
-            Toast toast = Toast.makeText(getApplicationContext(), batFirstTeam+"Batting.", Toast.LENGTH_SHORT); // initiate the Toast with context, message and duration for the Toast
+            Toast toast = Toast.makeText(getApplicationContext(), batFirstTeam+" Batting.", Toast.LENGTH_SHORT); // initiate the Toast with context, message and duration for the Toast
             toast.show();
 
         }
@@ -515,24 +429,18 @@ public class MainActivity extends AppCompatActivity {
             toast.show();
 
         }
-
-
-
-
     }
-
+    //BALLING TEAM 4 RUN ADDING
     public void bndryTeamB(View view){
 
-        EditText ballFirstEditText = (EditText) findViewById(R.id.ballFirstName);
-        String ballFirstTeam = ballFirstEditText.getText().toString();
-        EditText batFirstEditText=(EditText)findViewById(R.id.battingFirstName);
-        String batFirstTeam=batFirstEditText.getText().toString();
+        ballFirstTeam=ballFirstEditText.getText().toString();
+        batFirstTeam=batFirstEditText.getText().toString();
 
         if(wktTeamA==10 || overTeamA==20 && overTeamB<20 && wktTeamB<10 && resultChoice==0) {
 
             runTeamB=runTeamB+4;
             displayRunTeamB(runTeamB);
-            String commentry=ballFirstTeam+"Scored "+runTeamB+ " for "+wktTeamB+ " in "+overTeamB+" Overs.";
+            String commentry=ballFirstTeam+" Scored "+runTeamB+ " for "+wktTeamB+ " in "+overTeamB+" Overs.";
             displayResultB(commentry);
             if(runTeamB>runTeamA){
                 resultChoice=2;
@@ -563,7 +471,7 @@ public class MainActivity extends AppCompatActivity {
 
         }
         if(overTeamA<20&& wktTeamA<10 ){
-            Toast toast = Toast.makeText(getApplicationContext(), batFirstTeam+"Batting.", Toast.LENGTH_SHORT); // initiate the Toast with context, message and duration for the Toast
+            Toast toast = Toast.makeText(getApplicationContext(), batFirstTeam+" Batting.", Toast.LENGTH_SHORT); // initiate the Toast with context, message and duration for the Toast
             toast.show();
 
         }
@@ -573,15 +481,11 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-
-
-
     }
+    //BALLING TEAM 6 RUN ADDING
     public void sixTeamB(View view){
-        EditText ballFirstEditText = (EditText) findViewById(R.id.ballFirstName);
-        String ballFirstTeam = ballFirstEditText.getText().toString();
-        EditText batFirstEditText=(EditText)findViewById(R.id.battingFirstName);
-        String batFirstTeam=batFirstEditText.getText().toString();
+        ballFirstTeam=ballFirstEditText.getText().toString();
+        batFirstTeam=batFirstEditText.getText().toString();
 
         if(wktTeamA==10 || overTeamA==20 && overTeamB<20 && wktTeamB<10 && resultChoice==0) {
             runTeamB=runTeamB+6;
@@ -592,7 +496,7 @@ public class MainActivity extends AppCompatActivity {
             if(runTeamB>runTeamA){
                 resultChoice=2;
                 wktDiff=10-wktTeamB;
-                String teamBWin= ballFirstTeam+"Won The Game By "+wktDiff+ " Wickets!";
+                String teamBWin= ballFirstTeam+" Won The Game By "+wktDiff+ " Wickets!";
                 displayFinalResult(teamBWin);
 
 
@@ -619,7 +523,7 @@ public class MainActivity extends AppCompatActivity {
 
         }
         if(overTeamA<20 && wktTeamA<10 ){
-            Toast toast = Toast.makeText(getApplicationContext(), batFirstTeam+"Batting.", Toast.LENGTH_SHORT); // initiate the Toast with context, message and duration for the Toast
+            Toast toast = Toast.makeText(getApplicationContext(), batFirstTeam+" Batting.", Toast.LENGTH_SHORT); // initiate the Toast with context, message and duration for the Toast
             toast.show();
 
         }
@@ -629,21 +533,12 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-
-
-
-
     }
-
-
+    //BALLING TEAM 1 BALL ADDING
     public void addBallTeamB(View view) {
-        EditText ballFirstEditText = (EditText) findViewById(R.id.ballFirstName);
-        String ballFirstTeam = ballFirstEditText.getText().toString();
-        EditText batFirstEditText=(EditText)findViewById(R.id.battingFirstName);
-        String batFirstTeam=batFirstEditText.getText().toString();
+        ballFirstTeam=ballFirstEditText.getText().toString();
+        batFirstTeam=batFirstEditText.getText().toString();
         if(wktTeamA==10 || overTeamA==20 && overTeamB<20 && wktTeamB<10 && resultChoice==0) {
-
-
             if (overTeamB < 20) {
 
 
@@ -659,13 +554,13 @@ public class MainActivity extends AppCompatActivity {
 
                 displayOverTeamB(overTeamB);
                 displayBallTeamB(ballTeamB);
-                String commentryB = ballFirstTeam +"Scored " + runTeamB + " for " + wktTeamB + " in " + overTeamB + "." + ballTeamB + " Overs.";
+                String commentryB = ballFirstTeam +" Scored " + runTeamB + " for " + wktTeamB + " in " + overTeamB + "." + ballTeamB + " Overs.";
                 displayResultB(commentryB);
 
                 if (overTeamB == 20) {
                     overTeamB = 20;
                     ballTeamB = 0;
-                    commentryB = ballFirstTeam +"Scored " + runTeamB + " for " + wktTeamB + " in " + overTeamB + "." + ballTeamB + " Overs.";
+                    commentryB = ballFirstTeam +" Scored " + runTeamB + " for " + wktTeamB + " in " + overTeamB + "." + ballTeamB + " Overs.";
                     displayResultB(commentryB);
                     if (runTeamA > runTeamB) {
                         resultChoice=1;
@@ -678,7 +573,7 @@ public class MainActivity extends AppCompatActivity {
                     if (runTeamB > runTeamA) {
                         resultChoice=2;
                         wktDiff=10-wktTeamB;
-                        String teamBWin= ballFirstTeam+"Won The Game By "+wktDiff+ " Wickets!";
+                        String teamBWin= ballFirstTeam+" Won The Game By "+wktDiff+ " Wickets!";
                         displayFinalResult(teamBWin);
 
 
@@ -694,13 +589,7 @@ public class MainActivity extends AppCompatActivity {
 
                 }
 
-
-
-
         }
-
-
-
 
         }
         if(overTeamB==20 || wktTeamB==10){
@@ -714,7 +603,7 @@ public class MainActivity extends AppCompatActivity {
 
         }
         if(overTeamA<20&& wktTeamA<10 ){
-            Toast toast = Toast.makeText(getApplicationContext(), batFirstTeam+"Batting.", Toast.LENGTH_SHORT); // initiate the Toast with context, message and duration for the Toast
+            Toast toast = Toast.makeText(getApplicationContext(), batFirstTeam+" Batting.", Toast.LENGTH_SHORT); // initiate the Toast with context, message and duration for the Toast
             toast.show();
 
         }
@@ -724,82 +613,75 @@ public class MainActivity extends AppCompatActivity {
 
         }
     }
-
-    public void addWktTeamB(View view){
-        EditText ballFirstEditText = (EditText) findViewById(R.id.ballFirstName);
-        String ballFirstTeam = ballFirstEditText.getText().toString();
-        EditText batFirstEditText=(EditText)findViewById(R.id.battingFirstName);
-        String batFirstTeam=batFirstEditText.getText().toString();
-        if(wktTeamA==10 || overTeamA==20 && overTeamB<20 && wktTeamB<10 && resultChoice==0) {
+    //BALLING TEAM WICKET ADDING
+    public void addWktTeamB(View view) {
+        ballFirstTeam = ballFirstEditText.getText().toString();
+        batFirstTeam = batFirstEditText.getText().toString();
+        if (wktTeamA == 10 || overTeamA == 20 && overTeamB < 20 && wktTeamB < 10 && resultChoice == 0) {
 
             if (wktTeamB < 10) {
 
                 wktTeamB = wktTeamB + 1;
                 displayWktTeamB(wktTeamB);
-                String commentryB=ballFirstTeam +"Scored "+runTeamB+ " for "+wktTeamB+ " in "+overTeamB+"."+ballTeamB+" Overs.";
+                String commentryB = ballFirstTeam + " Scored " + runTeamB + " for " + wktTeamB + " in " + overTeamB + "." + ballTeamB + " Overs.";
                 displayResultB(commentryB);
             }
 
             if (wktTeamB > 9) {
 
                 wktTeamB = 10;
-                runDiff=runTeamA-runTeamB;
+                runDiff = runTeamA - runTeamB;
                 displayWktTeamB(wktTeamB);
-                String commentryB=ballFirstTeam +"Scored "+runTeamB+ " for "+wktTeamB+ " in "+overTeamB+"."+ballTeamB+" Overs.";
+                String commentryB = ballFirstTeam + " Scored " + runTeamB + " for " + wktTeamB + " in " + overTeamB + "." + ballTeamB + " Overs.";
                 displayResultB(commentryB);
-                if(runTeamA>runTeamB){
-                    resultChoice=1;
-                    String teamAWin= batFirstTeam +"Won The Game By " +runDiff+ " runs!" ;
+                if (runTeamA > runTeamB) {
+                    resultChoice = 1;
+                    String teamAWin = batFirstTeam + "Won The Game By " + runDiff + " runs!";
 
                     displayFinalResult(teamAWin);
 
 
                 }
-                if(runTeamB>runTeamA){
-                    resultChoice=2;
-                    wktDiff=10-wktTeamB;
-                    String teamBWin= ballFirstTeam +"Won The Game By "+wktDiff+ " Wickets!";
+                if (runTeamB > runTeamA) {
+                    resultChoice = 2;
+                    wktDiff = 10 - wktTeamB;
+                    String teamBWin = ballFirstTeam + " Won The Game By " + wktDiff + " Wickets!";
                     displayFinalResult(teamBWin);
 
 
-
                 }
-                if (runTeamA==runTeamB){
-                    resultChoice=3;
-                    String result="The Game is Drawn!";
+                if (runTeamA == runTeamB) {
+                    resultChoice = 3;
+                    String result = "The Game is Drawn!";
                     displayFinalResult(result);
 
                 }
             }
 
 
-
         }
 
-        if(overTeamB==20 || wktTeamB==10){
-            Toast toast = Toast.makeText(getApplicationContext(), ballFirstTeam+"'s Batting Finished.", Toast.LENGTH_SHORT); // initiate the Toast with context, message and duration for the Toast
+        if (overTeamB == 20 || wktTeamB == 10) {
+            Toast toast = Toast.makeText(getApplicationContext(), ballFirstTeam + "'s Batting Finished.", Toast.LENGTH_SHORT); // initiate the Toast with context, message and duration for the Toast
             toast.show();
 
         }
-        if(ballFirst==false && batFirst==false){
+        if (ballFirst == false && batFirst == false) {
             Toast toast = Toast.makeText(getApplicationContext(), "Please Set The Team Names, Batting Order and Finish Scoring Bat First Team. ", Toast.LENGTH_SHORT); // initiate the Toast with context, message and duration for the Toast
             toast.show();
         }
-        if(overTeamA<20&& wktTeamA<10 ){
-            Toast toast = Toast.makeText(getApplicationContext(), batFirstTeam+"Batting.", Toast.LENGTH_SHORT); // initiate the Toast with context, message and duration for the Toast
+        if (overTeamA < 20 && wktTeamA < 10) {
+            Toast toast = Toast.makeText(getApplicationContext(), batFirstTeam + " Batting.", Toast.LENGTH_SHORT); // initiate the Toast with context, message and duration for the Toast
             toast.show();
 
         }
-        if(resultChoice!=0){
+        if (resultChoice != 0) {
             Toast toast = Toast.makeText(getApplicationContext(), "Game Already Finished.", Toast.LENGTH_SHORT); // initiate the Toast with context, message and duration for the Toast
             toast.show();
 
         }
-
-
-
     }
-
+    //BATTING TEAM COMMENTARY
     public void displayResult(String result ) {
 
         TextView resultView = (TextView) findViewById(R.id.resultA);
@@ -807,27 +689,21 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
+    //BALLING TEAM COMMENTARY
     public void displayResultB(String result){
 
         TextView resultView = (TextView) findViewById(R.id.resultB);
         resultView.setText(result);
 
     }
+    //FINAL RESULT COMMENTARY
     public void displayFinalResult(String result){
 
         TextView resultView = (TextView) findViewById(R.id.finalResult);
         resultView.setText(result);
 
     }
-
-
-
-
-
-
-    //Reset View
-
+    //RESET BUTTON
     public void reset(View view){
         runTeamA=0;
         wktTeamA=0;
@@ -849,52 +725,17 @@ public class MainActivity extends AppCompatActivity {
         displayResult("");
         displayResultB("");
         displayFinalResult("");
-
-
-
-
-
-
-
-
-        EditText batFirstEditText=(EditText)findViewById(R.id.battingFirstName);
-        batFirstEditText.setText("");
-        batFirstEditText.setFocusable(true);
-        batFirstEditText.setClickable(true);
-        batFirstEditText.setCursorVisible(true);
-        batFirstEditText.requestFocus();
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.showSoftInput(batFirstEditText, InputMethodManager.SHOW_IMPLICIT);
-
-        EditText ballFirstEditText = (EditText) findViewById(R.id.ballFirstName);
-        ballFirstEditText.setText("");
-        ballFirstEditText.setFocusable(true);
-        ballFirstEditText.setClickable(true);
+        ballFirstEditText.setText(null);
         ballFirstEditText.setCursorVisible(true);
-        ballFirstEditText.requestFocus();
-        InputMethodManager imn = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imn.showSoftInput(ballFirstEditText, InputMethodManager.SHOW_IMPLICIT);
-
-
-
-
+        batFirstEditText.setCursorVisible(true);
+        batFirstEditText.setText(null);
         batFirstTeam="";
         ballFirstTeam="";
         batFirst=false;
         ballFirst=false;
-
-
-
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.showSoftInput(ballFirstEditText, InputMethodManager.SHOW_IMPLICIT);
+        imm.showSoftInput(batFirstEditText, InputMethodManager.SHOW_IMPLICIT);
 
     }
-
-
-
-
-
-
-
-
-
-
 }
